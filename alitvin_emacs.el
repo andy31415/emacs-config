@@ -1,5 +1,6 @@
 ;;; Some generic settings to start
 (setq make-backup-files nil)
+(set-default 'truncate-lines t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; I use a few packages here
@@ -25,6 +26,13 @@
 (setq evil-default-cursor "ivory") ;; Don't want black cursor
 (evil-mode 1)
 (blink-cursor-mode 0) ;; No blinking is better
+(setq x-stretch-cursor t)
+
+;; make it back after insert
+(setq-default cursor-type 'box)
+(add-hook 'post-command-hook 
+          (lambda () (setq cursor-type 'box)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Color theme + A theme similar to sublime text 2
@@ -146,5 +154,12 @@
 (need-package 'flymake-easy)
 (need-package 'flymake-jslint)
 (add-hook 'js-mode-hook 'flymake-jslint-load)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; MMM-mode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require 'cl)
+(need-package 'mmm-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
