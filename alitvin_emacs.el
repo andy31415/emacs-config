@@ -1,3 +1,6 @@
+;;; Some generic settings to start
+(setq make-backup-files nil)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; I use a few packages here
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -134,5 +137,14 @@
 (add-hook 'emacs-lisp-mode-hook
           ;; workaround for (eq buffer-file-name nil)
           (function (lambda () (if buffer-file-name (flymake-mode)))))
+
+;; Javascript
+;; FROM: http://www.emacswiki.org/emacs/FlymakeJavaScript
+;; Make sure you have "jslint":
+;;   1. Install node.js
+;;   2. npm -g install jslint
+(need-package 'flymake-easy)
+(need-package 'flymake-jslint)
+(add-hook 'js-mode-hook 'flymake-jslint-load)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
