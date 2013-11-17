@@ -178,4 +178,11 @@
 (global-set-key (kbd "M-D") 'mc/mark-previous-like-this) ;; instead of kill-word
 (global-set-key (kbd "M-d") 'mc/mark-next-like-this) ;; instead of kill-word
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SR-speedbar
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(need-package 'sr-speedbar)
+(global-set-key "\M-s" 'sr-speedbar-toggle)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
