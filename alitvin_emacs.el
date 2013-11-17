@@ -188,3 +188,9 @@
 (global-set-key "\M-s" 'sr-speedbar-toggle)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Extra scripts
+
+(need-package 'grizzl)
+(message "File name: %s" load-file-name)
+(let ((script-dir (file-name-directory load-file-name)))
+  (load (expand-file-name "project_files.el" script-dir)))
