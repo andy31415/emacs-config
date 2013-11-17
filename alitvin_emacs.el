@@ -72,7 +72,15 @@
 (setq-default tab-width 2)
 (setq indent-line-function 'insert-tab)
 
-(set-default-font "Inconsolata-14") ;; hopefully this is installed
+; general settings
+(when (display-graphic-p)
+        (set-face-attribute 'default nil :font "Inconsolata-14"))
+(setq inhibit-startup-message t)
+
+(add-hook 'java-mode-hook  '(lambda () (font-lock-set-up-width-warning 100)))
+(add-hook 'python-mode-hook  '(lambda () (font-lock-set-up-width-warning 80)))
+
+(tool-bar-mode -1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Icy mode - this completion is awesome
