@@ -1,6 +1,8 @@
 ;;; Some generic settings to start
 (setq make-backup-files nil)
 (set-default 'truncate-lines t)
+(global-set-key (kbd "M-1") 'delete-other-windows)
+(global-set-key (kbd "M-o") 'icicle-other-window-or-frame)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; I use a few packages here
