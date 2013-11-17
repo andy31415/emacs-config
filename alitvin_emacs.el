@@ -194,3 +194,6 @@
 (message "File name: %s" load-file-name)
 (let ((script-dir (file-name-directory load-file-name)))
   (load (expand-file-name "project_files.el" script-dir)))
+
+(global-set-key (kbd "M-p s") 'project/set-directory)
+(global-set-key (kbd "M-p f") 'project/select-file)

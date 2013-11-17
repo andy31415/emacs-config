@@ -28,7 +28,7 @@
             (if (project/accept-dir file-name)
                 (setq items (append (project/directory-files-recursive
                                      full-name
-                                     (concat (if (consp prefix) prefix "") file-name "/"))
+                                     (concat prefix file-name "/"))
                                     items)))
           (setq items (cons (concat prefix file-name) items)))))
     items))
@@ -46,6 +46,6 @@
   (interactive)
   (if (not project/directory)
       (error "No project defined. Use project/set-directory"))
-  (switch-to-buffer
-   (create-file-buffer (concat project/directory "/"
-                               (grizzl-completing-read "File: " project/files-index)))))
+  (find-file (expand-file-name
+              (grizzl-completing-read "File: " project/files-index)
+              project/directory)))
