@@ -161,4 +161,13 @@
 (require 'cl)
 (need-package 'mmm-mode)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Multiple-cursors: similar to Sublime Text 2
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(need-package 'multiple-cursors)
+
+(global-set-key (kbd "M-D") 'mc/mark-previous-like-this) ;; instead of kill-word
+(global-set-key (kbd "M-d") 'mc/mark-next-like-this) ;; instead of kill-word
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
