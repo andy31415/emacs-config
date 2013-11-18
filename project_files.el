@@ -42,7 +42,7 @@
   (setq project/directory
         (expand-file-name (read-file-name "Project Directory: "
                                           project/directory nil t
-                                          nil 'file-directory-p)))
+                                          "" 'file-directory-p)))
   (setq project/files-index
         (grizzl-make-index (project/directory-files-recursive project/directory))))
 
