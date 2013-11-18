@@ -215,3 +215,5 @@
 
 (global-set-key (kbd "M-p s") 'project/set-directory)
 (global-set-key (kbd "M-p f") 'project/select-file)
+
+(setq *grizzl-read-max-results* 40)
