@@ -53,6 +53,11 @@
      (cursor ((t (:background "ivory"))))
      (fringe ((t (:background "#1a1a1a"))))
      (mode-line ((t (:foreground "#eeeeec" :background "#555753"))))
+     (whitespace-space ((t (:foreground "grey23"))))
+     (whitespace-newline ((t (:foreground "grey21" :background "#171717"))))
+     (whitespace-tab ((t (:foreground "grey21" :background "#171717"))))
+     (whitespace-indentation ((t (:foreground "grey21" :background "#272727"))))
+     (whitespace-empty ((t (:foreground "grey27"))))
      (region ((t (:foreground "#404040" :background "#CC9900"))))
      (font-lock-builtin-face ((t (:foreground "#52e3f6"))))
      (font-lock-comment-face ((t (:foreground "#6495ed"))))
@@ -192,6 +197,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (need-package 'less-css-mode)
+(need-package 'whitespace)
+
+(global-whitespace-mode t)
+
+;; whitespace special cusomizations
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Extra scripts
