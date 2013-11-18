@@ -32,7 +32,7 @@
 
 ;; make it back after insert
 (setq-default cursor-type 'box)
-(add-hook 'post-command-hook 
+(add-hook 'post-command-hook
           (lambda () (setq cursor-type 'box)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -107,7 +107,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Company-mode: better auto-complete
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  
+
 (need-package 'company)
 (add-hook 'after-init-hook 'global-company-mode)
 
@@ -116,10 +116,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (need-package 'powerline)
-(add-hook 'post-command-hook 
-	  (lambda ()
-	    (when (not (minibuffer-selected-window))
-	      (setq powerline-selected-window (selected-window)))))
+(add-hook 'post-command-hook
+          (lambda ()
+            (when (not (minibuffer-selected-window))
+              (setq powerline-selected-window (selected-window)))))
 (powerline-default-theme)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -200,6 +200,7 @@
 (need-package 'whitespace)
 
 (global-whitespace-mode t)
+(setq whitespace-line-column 9999) ; I don't like this highlighting
 
 ;; whitespace special cusomizations
 
