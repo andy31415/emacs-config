@@ -7,7 +7,8 @@
 
 (require 'grizzl) ;; our fuzzy search provider
 
-(setq project/directory nil) ;; where the current project is located
+(defvar project/directory nil "Directory path for project open")
+(defvar project/files-index nil "Compiled index of files in the project")
 
 (defun project/accept-dir (dir-name)
   "Find out if DIR-NAME is something we want to check for project data"
