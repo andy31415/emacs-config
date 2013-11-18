@@ -203,8 +203,6 @@
 (global-whitespace-mode t)
 (setq whitespace-line-column 9999) ; I don't like this highlighting
 
-;; whitespace special cusomizations
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Extra scripts
 
@@ -214,6 +212,8 @@
   (load (expand-file-name "project_files.el" script-dir)))
 
 (global-set-key (kbd "M-p s") 'project/set-directory)
+(global-set-key (kbd "M-p M-s") 'project/set-directory)
 (global-set-key (kbd "M-p f") 'project/select-file)
+(global-set-key (kbd "M-p M-f") 'project/select-file)
 
 (setq *grizzl-read-max-results* 40)
