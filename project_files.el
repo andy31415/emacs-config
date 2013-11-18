@@ -14,6 +14,7 @@
   "Find out if DIR-NAME is something we want to check for project data"
   (not (or (member dir-name '("." ".." ".git"))
            (string-prefix-p ".git5" dir-name)
+           (string-prefix-p ".completions-" dir-name)
            (string-prefix-p "blaze-" dir-name))))
 
 (defun project/directory-files-recursive (dir &optional prefix)
@@ -27,10 +28,12 @@
       (let ((full-name (concat dir "/" file-name)))
         (if (file-directory-p full-name)
             (if (project/accept-dir file-name)
-                (setq items (append (project/directory-files-recursive
-                                     full-name
-                                     (concat prefix file-name "/"))
-                                    items)))
+                (progn
+                  (message "Recursing into %s%s" (or prefix "") file-name)
+                  (setq items (append (project/directory-files-recursive
+                                       full-name
+                                       (concat prefix file-name "/"))
+                                      items))))
           (setq items (cons (concat prefix file-name) items)))))
     items))
 

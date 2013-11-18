@@ -86,6 +86,7 @@
 
 (add-hook 'java-mode-hook  '(lambda () (font-lock-set-up-width-warning 100)))
 (add-hook 'python-mode-hook  '(lambda () (font-lock-set-up-width-warning 80)))
+(add-hook 'js-mode-hook  '(lambda () (font-lock-set-up-width-warning 80)))
 
 (tool-bar-mode -1)
 
