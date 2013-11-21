@@ -243,5 +243,11 @@
   (rgrep (read-string (format "Search in '%s'\nRegex: " project/directory))
          (read-string "Files: " nil 'rgrep-project-history "*")
          project/directory))
-
 (global-set-key (kbd "M-p g") 'rgrep-project)
+
+;; fast magit on a project
+(defun magit-project ()
+  "Run magit status on a project"
+  (interactive)
+  (magit-status project/directory))
+(global-set-key (kbd "M-p c") 'magit-project)
