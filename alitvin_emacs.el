@@ -199,12 +199,14 @@
 
 (need-package 'less-css-mode)
 (need-package 'whitespace)
+(need-package 'magit)
 
 (global-whitespace-mode t)
 (setq whitespace-line-column 9999) ; I don't like this highlighting
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Extra scripts
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (need-package 'grizzl)
 (message "File name: %s" load-file-name)
@@ -217,3 +219,29 @@
 (global-set-key (kbd "M-p M-f") 'project/select-file)
 
 (setq *grizzl-read-max-results* 40)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; More key bindings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(global-set-key (kbd "C-c C-b") 'ibuffer)
+(global-set-key (kbd "M-<up>") 'evil-window-up)
+(global-set-key (kbd "M-<down>") 'evil-window-down)
+(global-set-key (kbd "M-<left>") 'evil-window-left)
+(global-set-key (kbd "M-<right>") 'evil-window-right)
+
+;; "jk" means "ESC"
+(need-package 'key-chord)
+(setq key-chord-two-keys-delay 0.5)
+(key-chord-define evil-insert-state-map  "jk" 'evil-normal-state)
+(key-chord-mode 1)
+
+;; fast project rgrep
+(defun rgrep-project ()
+  "Do a rgrep on all files in the current directory"
+  (interactive)
+  (rgrep (read-string (format "Search in '%s'\nRegex: " project/directory))
+         (read-string "Files: " nil 'rgrep-project-history "*")
+         project/directory))
+
+(global-set-key (kbd "M-p g") 'rgrep-project)
