@@ -230,6 +230,11 @@
 (global-set-key (kbd "M-<left>") 'evil-window-left)
 (global-set-key (kbd "M-<right>") 'evil-window-right)
 
+;; terminal keys: alt up/down is page-up/down for some reason.
+;; I use vim, so C-f/C-b, C-d/C-u are better
+(global-set-key (kbd "<prior>") 'evil-window-up)
+(global-set-key (kbd "<next>") 'evil-window-down)
+
 ;; "jk" means "ESC"
 (need-package 'key-chord)
 (setq key-chord-two-keys-delay 0.5)
