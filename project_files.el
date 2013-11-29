@@ -62,3 +62,14 @@
               (concat project/directory "/" (ido-completing-read "File:" project/files-list)))))
 
 (setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right)
+
+;; Nice helper functions
+(defun project-grep ()
+  (interactive)
+  (helm-do-grep-1 (let ((search-dir
+                         (if (string-match (regexp-quote "google3") project/directory)
+                             project/directory
+                           (concat project/directory "google3"))))
+                    (loop for sd in '("java" "javatests" "isp" "production")
+                          collect (concat search-dir sd)))
+                  t nil '("*")))

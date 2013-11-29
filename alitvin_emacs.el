@@ -2,6 +2,7 @@
 (setq make-backup-files nil)
 (set-default 'truncate-lines t)
 (global-set-key (kbd "M-1") 'delete-other-windows)
+(global-set-key (kbd "M-0") 'icicle-delete-window)
 (global-set-key (kbd "M-o") 'icicle-other-window-or-frame)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -194,6 +195,18 @@
 (global-set-key "\M-s" 'sr-speedbar-toggle)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helm
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(need-package 'helm)
+(require 'helm-config)
+
+(global-set-key (kbd "M-h") 'helm-mini)
+(global-set-key (kbd "C-c h") 'helm-mini)
+(global-set-key (kbd "C-c f") 'helm-find-files)
+(global-set-key (kbd "C-c g") 'helm-do-grep)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Other modes
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -211,6 +224,7 @@
 (message "File name: %s" load-file-name)
 (let ((script-dir (file-name-directory load-file-name)))
   (load (expand-file-name "project_files.el" script-dir)))
+
 
 (global-set-key (kbd "M-p s") 'project/set-directory)
 (global-set-key (kbd "M-p M-s") 'project/set-directory)
@@ -242,14 +256,7 @@
 (key-chord-mode 1)
 
 ;; fast project rgrep
-(defun rgrep-project ()
-  "Do a rgrep on all files in the current directory"
-  (interactive)
-  (grep-compute-defaults)
-  (rgrep (read-string (format "Search in '%s'\nRegex: " project/directory))
-         (read-string "Files: " nil 'rgrep-project-history "*")
-         project/directory))
-(global-set-key (kbd "M-p g") 'rgrep-project)
+(global-set-key (kbd "M-p g") 'project-grep)
 
 ;; fast magit on a project
 (defun magit-project ()
