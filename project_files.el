@@ -60,3 +60,5 @@
       (error "No project defined. Use project/set-directory"))
   (find-file (expand-file-name
               (concat project/directory "/" (ido-completing-read "File:" project/files-list)))))
+
+(setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right)
