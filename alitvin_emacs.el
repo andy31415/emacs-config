@@ -208,7 +208,6 @@
 ;; Extra scripts
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(need-package 'grizzl)
 (message "File name: %s" load-file-name)
 (let ((script-dir (file-name-directory load-file-name)))
   (load (expand-file-name "project_files.el" script-dir)))
@@ -217,8 +216,6 @@
 (global-set-key (kbd "M-p M-s") 'project/set-directory)
 (global-set-key (kbd "M-p f") 'project/select-file)
 (global-set-key (kbd "M-p M-f") 'project/select-file)
-
-(setq *grizzl-read-max-results* 40)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; More key bindings
@@ -230,10 +227,13 @@
 (global-set-key (kbd "M-<left>") 'evil-window-left)
 (global-set-key (kbd "M-<right>") 'evil-window-right)
 
+(defun page-up-handler () (interactive) (if (display-graphic-p) (evil-scroll-page-up 1) (evil-window-up 1)))
+(defun page-down-handler () (interactive) (if (display-graphic-p) (evil-scroll-page-down 1) (evil-window-down 1)))
+
 ;; terminal keys: alt up/down is page-up/down for some reason.
 ;; I use vim, so C-f/C-b, C-d/C-u are better
-(global-set-key (kbd "<prior>") 'evil-window-up)
-(global-set-key (kbd "<next>") 'evil-window-down)
+(global-set-key (kbd "<prior>") 'page-up-handler)
+(global-set-key (kbd "<next>") 'page-down-handler)
 
 ;; "jk" means "ESC"
 (need-package 'key-chord)
@@ -245,6 +245,7 @@
 (defun rgrep-project ()
   "Do a rgrep on all files in the current directory"
   (interactive)
+  (grep-compute-defaults)
   (rgrep (read-string (format "Search in '%s'\nRegex: " project/directory))
          (read-string "Files: " nil 'rgrep-project-history "*")
          project/directory))

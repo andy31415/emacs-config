@@ -5,7 +5,16 @@
 ;; grizzl to have a nice auto-complete for the files we open
 ;;
 
-(require 'grizzl) ;; our fuzzy search provider
+(need-package 'flx) ;; our fuzzy search provider
+(need-package 'flx-ido) ;; our fuzzy search provider
+(need-package 'ido-vertical-mode) ;; our fuzzy search provider
+
+(flx-ido-mode 1)
+(setq ido-use-faces nil) ;; disable ido faces to see flx highlights.
+
+(ido-vertical-mode 1)
+
+(setq gc-cons-threshold 100000000)
 
 (defvar project/directory nil "Directory path for project open")
 (defvar project/files-index nil "Compiled index of files in the project")
@@ -43,13 +52,11 @@
         (expand-file-name (read-file-name "Project Directory: "
                                           project/directory nil t
                                           "" 'file-directory-p)))
-  (setq project/files-index
-        (grizzl-make-index (project/directory-files-recursive project/directory))))
+  (setq project/files-list (project/directory-files-recursive project/directory)))
 
 (defun project/select-file ()
   (interactive)
   (if (not project/directory)
       (error "No project defined. Use project/set-directory"))
   (find-file (expand-file-name
-              (grizzl-completing-read "File: " project/files-index)
-              project/directory)))
+              (concat project/directory "/" (ido-completing-read "File:" project/files-list)))))
