@@ -4,6 +4,11 @@
 (global-set-key (kbd "M-1") 'delete-other-windows)
 (global-set-key (kbd "M-0") 'icicle-delete-window)
 (global-set-key (kbd "M-o") 'icicle-other-window-or-frame)
+(setq scss-compile-at-save nil)
+(setq redisplay-dont-pause t)
+
+;; always end a file with a newline
+(setq require-final-newline t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; I use a few packages here
@@ -16,10 +21,13 @@
 
 (defun need-package (package-name)
   "Require PACKAGE-NAME. If not available, do package-install on it and then require."
-  (unless (require package-name nil 'noerror)
-    (message "Need to load %s" package-name)
-    (package-install package-name)
-    (require package-name)))
+  (condition-case nil
+      (unless (require package-name nil 'noerror)
+        (message "Need to load %s" package-name)
+        (package-install package-name)
+        (require package-name))
+    ((debug error) (message "!! FAILED %s !!" package-name))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Key bindings - I really like/need these
@@ -107,13 +115,6 @@
 (ac-config-default)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Company-mode: better auto-complete
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(need-package 'company)
-(add-hook 'after-init-hook 'global-company-mode)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; powerline: eye-candy for the status bar
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -188,11 +189,12 @@
 (global-set-key (kbd "M-d") 'mc/mark-next-like-this) ;; instead of kill-word
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; SR-speedbar
+;; SR-peedbar
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (need-package 'sr-speedbar)
-(global-set-key "\M-s" 'sr-speedbar-toggle)
+(global-set-key (kbd "C-c s") 'sr-speedbar-toggle)
+(custom-set-variables '(speedbar-show-unknown-files t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helm
@@ -201,10 +203,23 @@
 (need-package 'helm)
 (require 'helm-config)
 
-(global-set-key (kbd "M-h") 'helm-mini)
 (global-set-key (kbd "C-c h") 'helm-mini)
 (global-set-key (kbd "C-c f") 'helm-find-files)
 (global-set-key (kbd "C-c g") 'helm-do-grep)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ECLIM
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;(need-package 'emacs-eclim)
+(require 'eclim)
+(require 'eclimd)
+(require 'ac-emacs-eclim-source)
+(ac-emacs-eclim-config)
+
+(add-hook 'java-mode-hook '(lambda ()
+        (define-key java-mode-map (kbd "C-/") 'eclim-complete)
+        (define-key undo-tree-map (kbd "C-/") 'eclim-complete)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Other modes
@@ -228,6 +243,7 @@
 
 (global-set-key (kbd "M-p s") 'project/set-directory)
 (global-set-key (kbd "M-p M-s") 'project/set-directory)
+
 (global-set-key (kbd "M-p f") 'project/select-file)
 (global-set-key (kbd "M-p M-f") 'project/select-file)
 
@@ -235,11 +251,45 @@
 ;; More key bindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(global-set-key (kbd "C-c e f") 'first-error)
+(global-set-key (kbd "M-g f") 'first-error)
+(global-set-key (kbd "M-g M-f") 'first-error)
+(global-set-key (kbd "M-g r") 'recompile)
+(global-set-key (kbd "C-l") 'redraw-display)
+
 (global-set-key (kbd "C-c C-b") 'ibuffer)
 (global-set-key (kbd "M-<up>") 'evil-window-up)
 (global-set-key (kbd "M-<down>") 'evil-window-down)
 (global-set-key (kbd "M-<left>") 'evil-window-left)
 (global-set-key (kbd "M-<right>") 'evil-window-right)
+
+; ChromeOS terminal has some odd mappings
+(global-set-key (kbd "ESC M-[ d") 'evil-window-left)
+(global-set-key (kbd "ESC M-[ c") 'evil-window-right)
+
+(global-set-key (kbd "M-h") 'evil-window-left)
+(global-set-key (kbd "M-l") 'evil-window-right)
+(global-set-key (kbd "M-k") 'evil-window-up)
+(global-set-key (kbd "M-j") 'evil-window-down)
+
+(defun rebind-navigation-c ()
+   (define-key c-mode-base-map (kbd "M-h") 'evil-window-left)
+   (define-key c-mode-base-map (kbd "M-l") 'evil-window-right)
+   (define-key c-mode-base-map (kbd "M-k") 'evil-window-up)
+   (define-key c-mode-base-map (kbd "M-j") 'evil-window-down))
+(add-hook 'c-initialization-hook 'rebind-navigation-c)
+
+;; make ibuffer behave more "evil"-like
+(defun rebind-navigation-ibuffer ()
+   (define-key ibuffer-mode-map (kbd "j") 'next-line)
+   (define-key ibuffer-mode-map (kbd "k") 'previous-line)
+   (define-key ibuffer-mode-map (kbd "M-h") 'evil-window-left)
+   (define-key ibuffer-mode-map (kbd "M-l") 'evil-window-right)
+   (define-key ibuffer-mode-map (kbd "M-k") 'evil-window-up)
+   (define-key ibuffer-mode-map (kbd "M-j") 'evil-window-down))
+(add-hook 'ibuffer-mode-hooks 'rebind-navigation-ibuffer)
+
+(global-set-key (kbd "M-i") 'ibuffer)
 
 (defun page-up-handler () (interactive) (if (display-graphic-p) (evil-scroll-page-up 1) (evil-window-up 1)))
 (defun page-down-handler () (interactive) (if (display-graphic-p) (evil-scroll-page-down 1) (evil-window-down 1)))
@@ -264,3 +314,44 @@
   (interactive)
   (magit-status project/directory))
 (global-set-key (kbd "M-p c") 'magit-project)
+
+;;;;;;;;;;;;; Sending a region to shell ;;;;;;;;;;;;;
+(defun sh-send-line-or-region (&optional step)
+  (interactive ())
+  (let ((proc (get-process "shell"))
+        pbuf min max command)
+    (unless proc
+      (let ((currbuff (current-buffer)))
+        (shell)
+        (switch-to-buffer currbuff)
+        (setq proc (get-process "shell"))
+        ))
+    (setq pbuff (process-buffer proc))
+    (if (use-region-p)
+        (setq min (region-beginning)
+              max (region-end))
+      (setq min (point-at-bol)
+            max (point-at-eol)))
+    (setq command (concat (buffer-substring min max) "\n"))
+    (with-current-buffer pbuff
+      (goto-char (process-mark proc))
+      (insert command)
+      (move-marker (process-mark proc) (point))
+      ) ;;pop-to-buffer does not work with save-current-buffer -- bug?
+    (process-send-string  proc command)
+    (display-buffer (process-buffer proc) t)
+    (when step
+      (goto-char max)
+      (next-line))
+    ))
+
+(defun sh-send-line-or-region-and-step ()
+  (interactive) (sh-send-line-or-region t))
+(defun sh-switch-to-process-buffer ()
+  (interactive) (pop-to-buffer (process-buffer (get-process "shell")) t))
+
+(global-set-key (kbd "M-g s") 'sh-send-line-or-region-and-step)
+(global-set-key (kbd "M-g e") 'sh-switch-to-process-buffer)
+
+(modify-syntax-entry ?_ "w")
+(modify-syntax-entry ?_ "w" java-mode-syntax-table)

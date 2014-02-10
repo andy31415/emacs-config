@@ -67,9 +67,9 @@
 (defun project-grep ()
   (interactive)
   (helm-do-grep-1 (let ((search-dir
-                         (if (string-match (regexp-quote "google3") project/directory)
-                             project/directory
-                           (concat project/directory "google3"))))
+                         (file-name-as-directory (if (string-match (regexp-quote "google3") project/directory)
+                                                     project/directory
+                                                   (concat (file-name-as-directory project/directory) "google3")))))
                     (loop for sd in '("java" "javatests" "isp" "production")
                           collect (concat search-dir sd)))
                   t nil '("*")))
