@@ -17,6 +17,8 @@
 (require 'package)
 (add-to-list 'package-archives
   '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives
+  '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
 
 (defun need-package (package-name)
@@ -129,49 +131,50 @@
 ;; FlyMake: syntax checking on the fly
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(need-package 'flymake)
-(add-hook 'java-mode-hook 'flymake-mode-on)
-
-;; ELISP
-(defun flymake-elisp-init ()
-  (unless (string-match "^ " (buffer-name))
-    (let* ((temp-file   (flymake-init-create-temp-buffer-copy
-                         'flymake-create-temp-inplace))
-           (local-file  (file-relative-name
-                         temp-file
-                         (file-name-directory buffer-file-name))))
-      (list
-       (expand-file-name invocation-name invocation-directory)
-       (list
-        "-Q" "--batch" "--eval" 
-        (prin1-to-string
-         (quote
-          (dolist (file command-line-args-left)
-            (with-temp-buffer
-              (insert-file-contents file)
-              (condition-case data
-                  (scan-sexps (point-min) (point-max))
-                (scan-error
-                 (goto-char(nth 2 data))
-                 (princ (format "%s:%s: error: Unmatched bracket or quote\n"
-                                file (line-number-at-pos)))))))
-          )
-         )
-        local-file)))))
-(push '("\\.el$" flymake-elisp-init) flymake-allowed-file-name-masks)
-(add-hook 'emacs-lisp-mode-hook
-          ;; workaround for (eq buffer-file-name nil)
-          (function (lambda () (if buffer-file-name (flymake-mode)))))
-
-;; Javascript
-;; FROM: http://www.emacswiki.org/emacs/FlymakeJavaScript
-;; Make sure you have "jslint":
-;;   1. Install node.js
-;;   2. npm -g install jslint
-(need-package 'flymake-easy)
-(need-package 'flymake-jslint)
-(add-hook 'js-mode-hook 'flymake-jslint-load)
-
+(defun flymake-on ()
+  (need-package 'flymake)
+  (add-hook 'java-mode-hook 'flymake-mode-on)
+  
+  ;; ELISP
+  (defun flymake-elisp-init ()
+    (unless (string-match "^ " (buffer-name))
+      (let* ((temp-file   (flymake-init-create-temp-buffer-copy
+                           'flymake-create-temp-inplace))
+             (local-file  (file-relative-name
+                           temp-file
+                           (file-name-directory buffer-file-name))))
+        (list
+         (expand-file-name invocation-name invocation-directory)
+         (list
+          "-Q" "--batch" "--eval" 
+          (prin1-to-string
+           (quote
+            (dolist (file command-line-args-left)
+              (with-temp-buffer
+                (insert-file-contents file)
+                (condition-case data
+                    (scan-sexps (point-min) (point-max))
+                  (scan-error
+                   (goto-char(nth 2 data))
+                   (princ (format "%s:%s: error: Unmatched bracket or quote\n"
+                                  file (line-number-at-pos)))))))
+            )
+           )
+          local-file)))))
+  (push '("\\.el$" flymake-elisp-init) flymake-allowed-file-name-masks)
+  (add-hook 'emacs-lisp-mode-hook
+            ;; workaround for (eq buffer-file-name nil)
+            (function (lambda () (if buffer-file-name (flymake-mode)))))
+  
+  ;; Javascript
+  ;; FROM: http://www.emacswiki.org/emacs/FlymakeJavaScript
+  ;; Make sure you have "jslint":
+  ;;   1. Install node.js
+  ;;   2. npm -g install jslint
+  (need-package 'flymake-easy)
+  (need-package 'flymake-jslint)
+  (add-hook 'js-mode-hook 'flymake-jslint-load))
+  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; MMM-mode
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -195,6 +198,9 @@
 (need-package 'sr-speedbar)
 (global-set-key (kbd "C-c s") 'sr-speedbar-toggle)
 (custom-set-variables '(speedbar-show-unknown-files t))
+
+(require 'neotree)
+(global-set-key (kbd "<f8>") 'neotree-toggle)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helm
@@ -228,6 +234,25 @@
 (need-package 'less-css-mode)
 (need-package 'whitespace)
 (need-package 'magit)
+(need-package 'ace-jump-mode)
+(need-package 'dired+)
+
+(autoload 'ace-jump-mode "ace-jump-mode" "Emacs quick move minor mode" t)
+(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+
+(autoload 'ace-jump-mode-pop-mark "ace-jump-mode" "Ace jump back:-)" t)
+(eval-after-load "ace-jump-mode" '(ace-jump-mode-enable-mark-sync))
+(define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
+
+(define-key evil-normal-state-map (kbd "SPC") 'ace-jump-mode)
+
+(need-package 'tabbar)
+(tabbar-mode)
+
+(need-package 'recentf)
+(recentf-mode 1)
+(define-key global-map (kbd "C-c C-r") 'icicle-recent-file)
+
 
 (global-whitespace-mode t)
 (setq whitespace-line-column 9999) ; I don't like this highlighting
