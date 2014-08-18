@@ -174,6 +174,17 @@
   (need-package 'flymake-easy)
   (need-package 'flymake-jslint)
   (add-hook 'js-mode-hook 'flymake-jslint-load))
+
+(need-package 'js2-mode)
+
+;; With closure, find the require/provide and assume available
+(add-hook 'js2-post-parse-callbacks
+          (lambda ()
+            (let ((buf (buffer-string))
+                  (index 0))
+              (while (string-match "\\(goog\\.require\\|goog\\.provide\\)('\\([^'.]*\\)" buf index)
+                (setq index (+ 1 (match-end 0)))
+                (add-to-list 'js2-additional-externs (match-string 2 buf))))))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; MMM-mode
@@ -248,6 +259,18 @@
 
 (need-package 'tabbar)
 (tabbar-mode)
+(defun my-tabbar-buffer-groups () ;; customize to show all normal files in one group
+   "Returns the name of the tab group names the current buffer belongs to.
+ There are two groups: Emacs buffers (those whose name starts with '*', plus
+ dired buffers), and the rest.  This works at least with Emacs v24.2 using
+ tabbar.el v1.7."
+   (list (cond ((string-equal "*" (substring (buffer-name) 0 1)) "emacs")
+               ((eq major-mode 'dired-mode) "emacs")
+               (t "user"))))
+(setq tabbar-buffer-groups-function 'my-tabbar-buffer-groups)
+(define-key global-map (kbd "M-S-<left>") 'tabbar-backward)
+(define-key global-map (kbd "M-S-<right>") 'tabbar-forward)
+(define-key global-map (kbd "M-w") '(kill-buffer (current-buffer)))
 
 (need-package 'recentf)
 (recentf-mode 1)
@@ -380,3 +403,10 @@
 
 (modify-syntax-entry ?_ "w")
 (modify-syntax-entry ?_ "w" java-mode-syntax-table)
+
+(setq vc-ignore-dir-regexp
+                (format "\\(%s\\)\\|\\(%s\\)"
+                        vc-ignore-dir-regexp
+                        tramp-file-name-regexp))
+
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
