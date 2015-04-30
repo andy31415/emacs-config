@@ -92,7 +92,9 @@
 
 ; general settings
 (when (display-graphic-p)
-        (set-face-attribute 'default nil :font "Inconsolata-14"))
+  (condition-case err
+      (set-face-attribute 'default nil :font "Inconsolata-14")
+    (error (message "Cannot set font: %s" (error-message-string err)))))
 (setq inhibit-startup-message t)
 
 (add-hook 'java-mode-hook  '(lambda () (font-lock-set-up-width-warning 100)))
@@ -134,7 +136,7 @@
 (defun flymake-on ()
   (need-package 'flymake)
   (add-hook 'java-mode-hook 'flymake-mode-on)
-  
+
   ;; ELISP
   (defun flymake-elisp-init ()
     (unless (string-match "^ " (buffer-name))
@@ -146,7 +148,7 @@
         (list
          (expand-file-name invocation-name invocation-directory)
          (list
-          "-Q" "--batch" "--eval" 
+          "-Q" "--batch" "--eval"
           (prin1-to-string
            (quote
             (dolist (file command-line-args-left)
@@ -165,7 +167,7 @@
   (add-hook 'emacs-lisp-mode-hook
             ;; workaround for (eq buffer-file-name nil)
             (function (lambda () (if buffer-file-name (flymake-mode)))))
-  
+
   ;; Javascript
   ;; FROM: http://www.emacswiki.org/emacs/FlymakeJavaScript
   ;; Make sure you have "jslint":
@@ -185,7 +187,7 @@
               (while (string-match "\\(goog\\.require\\|goog\\.provide\\)('\\([^'.]*\\)" buf index)
                 (setq index (+ 1 (match-end 0)))
                 (add-to-list 'js2-additional-externs (match-string 2 buf))))))
-  
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; MMM-mode
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -247,6 +249,7 @@
 (need-package 'magit)
 (need-package 'ace-jump-mode)
 (need-package 'dired+)
+(need-package 'yaml-mode)
 
 (autoload 'ace-jump-mode "ace-jump-mode" "Emacs quick move minor mode" t)
 (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
@@ -270,7 +273,9 @@
 (setq tabbar-buffer-groups-function 'my-tabbar-buffer-groups)
 (define-key global-map (kbd "M-S-<left>") 'tabbar-backward)
 (define-key global-map (kbd "M-S-<right>") 'tabbar-forward)
-(define-key global-map (kbd "M-w") '(kill-buffer (current-buffer)))
+(define-key global-map (kbd "C-M-w")
+  (lambda () (interactive)
+    (kill-buffer (current-buffer))))
 
 (need-package 'recentf)
 (recentf-mode 1)
